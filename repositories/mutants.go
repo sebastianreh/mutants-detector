@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"ExamenMeLiMutante/dal"
 	mgo "ExamenMeLiMutante/dal/mongo"
+	rds "ExamenMeLiMutante/dal/redis"
 	"ExamenMeLiMutante/models"
 	"ExamenMeLiMutante/utils"
 	"context"
@@ -17,16 +17,16 @@ import (
 type (
 	MutantRepository struct {
 		mongoDb mgo.IMongoDatabase
-		redis   dal.IRedisDatabase
+		redis   rds.IRedisDatabase
 		cache   IMutantCache
 	}
 )
 
 const (
-	mutantsSavedKey    = "mutants:saved:dna"
-	humansSavedKey     = "humans:saved:dna"
-	mutantsNotSavedKey = "mutants:notSaved:dna"
-	humansNotSavedKey  = "humans:notSaved:dna"
+	MutantsSavedKey    = "mutants:saved:dna"
+	HumansSavedKey     = "humans:saved:dna"
+	MutantsNotSavedKey = "mutants:notSaved:dna"
+	HumansNotSavedKey  = "humans:notSaved:dna"
 	MutantStatus       = "mutant"
 	HumanStatus        = "human"
 	NotFoundStatus     = "notFound"
@@ -41,6 +41,7 @@ var (
 )
 
 type IMutantRepository interface {
+	SaveSubjectIteration(models.Subject)
 	GetSubjectStatus(dnaId string) string
 	QueueDatabaseOperations(subsChan <-chan *models.Subject)
 	GetSubjectsStats() (models.MutantsPreStats, error)
@@ -69,7 +70,7 @@ func (repository MutantRepository) startMongoClient() *mongo.Database {
 	return mongoDatabase
 }
 
-func NewMutantRepository(mongoDb mgo.IMongoDatabase, redis dal.IRedisDatabase, cache IMutantCache) IMutantRepository {
+func NewMutantRepository(mongoDb mgo.IMongoDatabase, redis rds.IRedisDatabase, cache IMutantCache) IMutantRepository {
 	return MutantRepository{
 		mongoDb: mongoDb,
 		redis:   redis,
@@ -82,13 +83,14 @@ func NewMutantRepository(mongoDb mgo.IMongoDatabase, redis dal.IRedisDatabase, c
 func (repository MutantRepository) QueueDatabaseOperations(subsChan <-chan *models.Subject) {
 	repository.startRedisClient()
 	for subject := range subsChan {
-		repository.SaveSubjectIteration(*subject, redisClient)
+		repository.SaveSubjectIteration(*subject)
 	}
 }
 
 // Aqui se guardan las iteraciones de los sujetos
 
-func (repository MutantRepository) SaveSubjectIteration(subject models.Subject, client *redis.Client) {
+func (repository MutantRepository) SaveSubjectIteration(subject models.Subject) {
+	client := repository.startRedisClient()
 	key := selectConditionKey(subject)
 	statsCache := repository.cache.GetStatsFromCache()
 
@@ -118,13 +120,13 @@ func (repository MutantRepository) handleIterationsDb(result int64) {
 		humansToSave := repository.transferAndGenerateSubjects(HumanStatus)
 
 		if len(mutantsToSave) != 0 {
-			err := repository.SaveBulkSubjectsInDb(mutantsToSave, MutantStatus)
+			err := repository.saveBulkSubjectsInDb(mutantsToSave, MutantStatus)
 			if err != nil {
 				log.Errorf("repositories.SaveSubjectIteration | Error :%v", err)
 			}
 		}
 		if len(humansToSave) != 0 {
-			err := repository.SaveBulkSubjectsInDb(humansToSave, HumanStatus)
+			err := repository.saveBulkSubjectsInDb(humansToSave, HumanStatus)
 			if err != nil {
 				log.Errorf("repositories.SaveSubjectIteration | Error :%v", err)
 			}
@@ -135,21 +137,21 @@ func (repository MutantRepository) handleIterationsDb(result int64) {
 
 // Aquí se guardan los sujetos en Mongo
 
-func (repository MutantRepository) SaveBulkSubjectsInDb(subjects []models.Subject, status string) error {
+func (repository MutantRepository) saveBulkSubjectsInDb(subjects []models.Subject, status string) error {
 	switch status {
 	case MutantStatus:
 		subjectCollection = repository.startMongoClient().Collection(mgo.MutantsCollection)
 	case HumanStatus:
 		subjectCollection = repository.startMongoClient().Collection(mgo.HumansCollection)
 	}
-	subjectOperations := make([]mongo.WriteModel, 0)
+	subjectsOperations := make([]mongo.WriteModel, 0)
 
-	for _, mutant := range subjects {
-		mutantModel := buildSubjectModelDB(mutant)
-		subjectOperations = append(subjectOperations, mutantModel)
+	for _, subject := range subjects {
+		mutantModel := BuildSubjectModelDB(subject)
+		subjectsOperations = append(subjectsOperations, mutantModel)
 	}
 
-	bwSubjects, err := subjectCollection.BulkWrite(context.Background(), subjectOperations)
+	bwSubjects, err := subjectCollection.BulkWrite(context.Background(), subjectsOperations)
 
 	if err != nil {
 		log.Errorf("Error saving models.Subject in MongoDB => %v", err)
@@ -166,13 +168,13 @@ func (repository MutantRepository) SaveBulkSubjectsInDb(subjects []models.Subjec
 
 func (repository MutantRepository) GetSubjectStatus(dnaId string) string {
 	client := repository.startRedisClient()
-	mutantSavedInDb, _ := client.SIsMember(mutantsSavedKey, dnaId).Result()
-	mutantNotSavedInDb, _ := client.SIsMember(mutantsNotSavedKey, dnaId).Result()
+	mutantSavedInDb, _ := client.SIsMember(MutantsSavedKey, dnaId).Result()
+	mutantNotSavedInDb, _ := client.SIsMember(MutantsNotSavedKey, dnaId).Result()
 	if mutantSavedInDb || mutantNotSavedInDb {
 		return MutantStatus
 	}
-	humanSavedInDb, _ := client.SIsMember(humansSavedKey, dnaId).Result()
-	humanNotSavedInDb, _ := client.SIsMember(humansNotSavedKey, dnaId).Result()
+	humanSavedInDb, _ := client.SIsMember(HumansSavedKey, dnaId).Result()
+	humanNotSavedInDb, _ := client.SIsMember(HumansNotSavedKey, dnaId).Result()
 	if humanSavedInDb || humanNotSavedInDb {
 		return HumanStatus
 	}
@@ -183,25 +185,25 @@ func (repository MutantRepository) GetSubjectStatus(dnaId string) string {
 
 func (repository MutantRepository) GetSubjectsStats() (models.MutantsPreStats, error) {
 	client := repository.startRedisClient()
-	mutantsNotSaved, err := client.SMembers(mutantsNotSavedKey).Result()
+	mutantsNotSaved, err := client.SMembers(MutantsNotSavedKey).Result()
 	mutantsNotSavedCount := len(mutantsNotSaved)
 	if err != nil {
-		log.Error("repositories.BuildRedisData | Error reading mutants counter: %v", err)
+		log.Errorf("repositories.BuildRedisData | Error reading mutants counter: %v", err)
 	}
-	humansNotSaved, err := client.SMembers(humansNotSavedKey).Result()
+	humansNotSaved, err := client.SMembers(HumansNotSavedKey).Result()
 	humansNotSavedCount := len(humansNotSaved)
 	if err != nil {
-		log.Error("repositories.BuildRedisData | Error reading humans counter: %v", err)
+		log.Errorf("repositories.BuildRedisData | Error reading humans counter: %v", err)
 	}
-	mutantsSaved, err := client.SMembers(mutantsSavedKey).Result()
+	mutantsSaved, err := client.SMembers(MutantsSavedKey).Result()
 	mutantsSavedCount := len(mutantsSaved)
 	if err != nil {
-		log.Error("repositories.BuildRedisData | Error reading mutants counter: %v", err)
+		log.Errorf("repositories.BuildRedisData | Error reading mutants counter: %v", err)
 	}
-	humansSaved, err := client.SMembers(humansSavedKey).Result()
+	humansSaved, err := client.SMembers(HumansSavedKey).Result()
 	humansSavedCount := len(humansSaved)
 	if err != nil {
-		log.Error("repositories.BuildRedisData | Error reading humans counter: %v", err)
+		log.Errorf("repositories.BuildRedisData | Error reading humans counter: %v", err)
 	}
 	preStats := models.MutantsPreStats{
 		CountMutants: mutantsNotSavedCount + mutantsSavedCount,
@@ -229,11 +231,11 @@ func (repository MutantRepository) BuildRedisSubjectData(status string, collecti
 	client := repository.startRedisClient()
 	subjectsTosSave := repository.transferAndGenerateSubjects(status)
 	if len(subjectsTosSave) > 0 {
-		_ = repository.SaveBulkSubjectsInDb(subjectsTosSave, MutantStatus)
+		_ = repository.saveBulkSubjectsInDb(subjectsTosSave, MutantStatus)
 	}
-	mutantsToRemove, _ := client.SMembers(savedKey).Result()
-	log.Infof("Mutants to remove: %d", len(mutantsToRemove))
-	removed, _ := client.SRem(savedKey, mutantsToRemove).Result()
+	subjectsToRemove, _ := client.SMembers(savedKey).Result()
+	log.Infof("Mutants to remove: %d", len(subjectsToRemove))
+	removed, _ := client.SRem(savedKey, subjectsToRemove).Result()
 	log.Infof("Mutants removed: %d", removed)
 	subjectsCount := repository.buildRedisDataByStatus(savedKey, collection)
 	return subjectsCount
@@ -253,7 +255,7 @@ func (repository MutantRepository) buildRedisDataByStatus(key string, collection
 	}
 	cursor, err := subjectCollection.Find(context.TODO(), query, &findOptions)
 	if err != nil {
-		log.Error("repositories.buildRedisDataByStatus | Error finding query: %v", err)
+		log.Errorf("repositories.buildRedisDataByStatus | Error finding query: %v", err)
 	}
 
 	defer func() {
@@ -288,9 +290,11 @@ func (repository MutantRepository) transferAndGenerateSubjects(status string) []
 	if err != nil {
 		log.Errorf("repositories.transferAndGenerateSubjects | Error :%v", err)
 	}
-	_, err = client.SRem(notSavedKey, subjectsToSaveDiff).Result()
-	if err != nil {
-		log.Errorf("repositories.transferAndGenerateSubjects | Error :%v", err)
+	if len(subjectsToSaveDiff) > 0 {
+		_, err = client.SRem(notSavedKey, subjectsToSaveDiff).Result()
+		if err != nil {
+			log.Errorf("repositories.transferAndGenerateSubjects | Error :%v", err)
+		}
 	}
 	subjectsNowInSaved, _ := client.SAdd(savedKey, subjectsToSaveDiff).Result()
 

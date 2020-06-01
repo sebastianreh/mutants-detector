@@ -9,9 +9,9 @@ import (
 )
 
 type Status struct {
-	Version string    `json:"name" xml:"name" form:"name" query:"name"`
-	Name    string    `json:"email" xml:"email" form:"email" query:"email"`
-	Date    time.Time `json:"date" xml:"date" form:"date" query:"date"`
+	Name    string    `json:"email"`
+	Version string    `json:"name"`
+	Date    time.Time `json:"date"`
 }
 
 func StatusController(c echo.Context) error {

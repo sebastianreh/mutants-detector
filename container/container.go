@@ -2,8 +2,8 @@ package container
 
 import (
 	"ExamenMeLiMutante/controllers"
-	"ExamenMeLiMutante/dal"
 	"ExamenMeLiMutante/dal/mongo"
+	"ExamenMeLiMutante/dal/redis"
 	"ExamenMeLiMutante/repositories"
 	"ExamenMeLiMutante/services"
 	"ExamenMeLiMutante/services/finder"
@@ -20,7 +20,7 @@ var (
 	MutantCache      repositories.IMutantCache
 	// databases
 	MongoDatabase mongo.IMongoDatabase
-	RedisDatabase dal.IRedisDatabase
+	RedisDatabase redis.IRedisDatabase
 )
 
 // Aquí se inician e inyectan las dependencias
@@ -28,7 +28,7 @@ var (
 func init() {
 	MutantFinderService = finder.NewMutantFinderService()
 	MongoDatabase = mongo.NewMongoClient()
-	RedisDatabase = dal.NewRedisDatabase()
+	RedisDatabase = redis.NewRedisDatabase()
 	MutantCache = repositories.NewMutantCacheRepository()
 	MutantRepository = repositories.NewMutantRepository(MongoDatabase, RedisDatabase, MutantCache)
 	MutantService = services.NewMutantService(MutantFinderService, MutantRepository)

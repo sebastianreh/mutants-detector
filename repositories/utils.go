@@ -42,7 +42,7 @@ func generateSubjects(mutantsIds []string, isMutant bool) *[]models.Subject {
 
 // Genera los modelos para insertar en Mongo
 
-func buildSubjectModelDB(subject models.Subject) mongo.WriteModel {
+func BuildSubjectModelDB(subject models.Subject) mongo.WriteModel {
 	model := mongo.NewUpdateOneModel()
 	model.Filter = bson.M{
 		"dna_id": subject.Id,
@@ -58,9 +58,9 @@ func buildSubjectModelDB(subject models.Subject) mongo.WriteModel {
 
 func selectConditionKey(subject models.Subject) string {
 	if subject.IsMutant {
-		return mutantsNotSavedKey
+		return MutantsNotSavedKey
 	} else {
-		return humansNotSavedKey
+		return HumansNotSavedKey
 	}
 }
 
@@ -68,8 +68,8 @@ func selectConditionKey(subject models.Subject) string {
 
 func selectKeysByStatus(status string) (string, string) {
 	if status == MutantStatus {
-		return mutantsSavedKey, mutantsNotSavedKey
+		return MutantsSavedKey, MutantsNotSavedKey
 	} else {
-		return humansSavedKey, humansNotSavedKey
+		return HumansSavedKey, HumansNotSavedKey
 	}
 }

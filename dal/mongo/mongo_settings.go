@@ -22,13 +22,13 @@ func (mgo MongoDatabase) ConfigureDatabase() {
 	log.Info("Configuring database...")
 	db := mgo.SubjectsDatabase()
 	if db != nil {
-		configureIndexes(db)
+		ConfigureIndexes(db)
 	} else {
 		log.Error("Invalid database to configure")
 	}
 }
 
-func configureIndexes(db *mongo.Database) {
+func ConfigureIndexes(db *mongo.Database) {
 	setSubjectsIndexes(db)
 }
 
