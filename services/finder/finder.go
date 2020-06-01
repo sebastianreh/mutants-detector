@@ -30,12 +30,16 @@ func NewMutantFinderService() IMutantFinderService {
 	return MutantFinderService{}
 }
 
+	// Aqui comienza la busqueda de mutantes. Se crea un canal que espera por la respuesta de la condición del sujeto
+
 func (finder MutantFinderService) IsMutant(dna []string) bool {
 	isMutant := make(chan bool)
 	sync := NewWaitGroupSyncronizer()
 	go finder.findAsync(&dna, sync, &isMutant)
 	return <-isMutant
 }
+
+	// Se lanza una rutina por cada tipo de busqueda, por adn: horizontal, vertical, diagonal y la diagonal inversa
 
 func (finder MutantFinderService) findAsync(dnaChain *[]string, sync *waitGroupSynchronizer, isMutant *chan bool) {
 	mutationCounter := NewMutationsSafeCounter()
@@ -48,6 +52,8 @@ func (finder MutantFinderService) findAsync(dnaChain *[]string, sync *waitGroupS
 	mutationCounter.NoMutationFound(isMutant)
 }
 
+	// Lanza una rutina por cada string dentro del adn
+
 func (finder MutantFinderService) findHorizontalAsync(dnaChain *[]string, mutations *mutationsSafeCounter, sync *waitGroupSynchronizer, isMutant *chan bool) {
 	for _, dnaBit := range *dnaChain {
 		sync.horizontal.Add(1)
@@ -56,6 +62,8 @@ func (finder MutantFinderService) findHorizontalAsync(dnaChain *[]string, mutati
 	sync.horizontal.Wait()
 	sync.general.Done()
 }
+
+	// Se arman las verticales una a una y se lanzan rutinas para su busqueda
 
 func (finder MutantFinderService) findVerticalAsync(dnaChain *[]string, mutations *mutationsSafeCounter, sync *waitGroupSynchronizer, isMutant *chan bool) {
 	for i := 0; i < len(*dnaChain); i++ {
@@ -69,6 +77,9 @@ func (finder MutantFinderService) findVerticalAsync(dnaChain *[]string, mutation
 	sync.vertical.Wait()
 	sync.general.Done()
 }
+
+	// Se arman las diagonales, excluyendo los valores en las esquinas de la matriz que no pueden ser interpretados, por la longitud de la combinación
+	// que se está buscando
 
 func (finder MutantFinderService) findDiagonalAsync(dnaChain *[]string, mutations *mutationsSafeCounter, sync *waitGroupSynchronizer, isMutant *chan bool) {
 	searchLimit := len(*dnaChain) - offset + 1
@@ -97,6 +108,9 @@ func (finder MutantFinderService) findDiagonalAsync(dnaChain *[]string, mutation
 	sync.general.Done()
 }
 
+	// Se arman las diagonales, excluyendo los valores en las esquinas de la matriz que no pueden ser interpretados, por la longitud de la combinación
+	// que se está buscando
+
 func (finder MutantFinderService) findInverseDiagonalAsync(dnaChain *[]string, mutations *mutationsSafeCounter, sync *waitGroupSynchronizer, isMutant *chan bool) {
 	searchLimit := len(*dnaChain) - offset + 1
 	for i := 0; i < searchLimit; i++ {
@@ -123,6 +137,8 @@ func (finder MutantFinderService) findInverseDiagonalAsync(dnaChain *[]string, m
 	sync.inverseDiagonal.Wait()
 	sync.general.Done()
 }
+
+	// Cuando recibe el evento de cierre del canal, deja de enviar nuevas rutinas para encontrar la mutación y aumentar el contador
 
 func (finder MutantFinderService) findMutationRoutine(mutations *mutationsSafeCounter, dnaBit string, wg *WaitGroup, isMutant *chan bool) {
 	var QuitChan = make(chan struct{})

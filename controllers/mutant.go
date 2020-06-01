@@ -32,11 +32,13 @@ func (controller MutantController) VerifyMutantStatus(c echo.Context) error {
 	mutantResponse := models.MutantResponse{}
 	if err := c.Bind(&mutantRequest); err != nil {
 		log.Errorf("Error in VerifyMutantStatus: bad request: %v", err)
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		echoErr := echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		return c.JSON(echoErr.Code, echoErr)
 	}
 	if err := c.Validate(mutantRequest); err != nil {
 		log.Errorf("Error in VerifyMutantStatus: bad request: %v", err)
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		echoErr := echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		return c.JSON(echoErr.Code, echoErr)
 	}
 	mutantResponse = controller.service.VerifyMutant(*mutantRequest)
 	if !mutantResponse.IsMutant {
@@ -51,7 +53,8 @@ func (controller MutantController) GetMutantStats(c echo.Context) error {
 	mutantStats, err := controller.service.GetSubjectsStats()
 	if err != nil {
 		log.Errorf("Error in GetMutantStats: internal error: %v", err)
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		echoErr :=  echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		return c.JSON(echoErr.Code, echoErr)
 	}
 	return c.JSON(http.StatusOK, mutantStats)
 }

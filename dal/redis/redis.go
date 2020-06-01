@@ -1,4 +1,4 @@
-package dal
+package redis
 
 import (
 	. "ExamenMeLiMutante/settings"
@@ -46,5 +46,23 @@ func (rs RedisDatabase) buildClient(host string, port string) *redis.Client {
 		PoolTimeout:  30 * time.Second,
 	}
 
+	return redis.NewClient(options)
+}
+
+func NewRedisTestDatabase() *redis.Client {
+	var url = fmt.Sprintf("%s:%s", ProjectSettings.Redis.TestRedisHost, ProjectSettings.Redis.RedisPort)
+	var options = &redis.Options{
+		Addr:     url,
+		Password: "", // No password set
+		DB:       0,  // Use default DB
+		OnConnect: func(*redis.Conn) error {
+			return nil
+		},
+		DialTimeout:  10 * time.Second,
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		PoolSize:     100,
+		PoolTimeout:  30 * time.Second,
+	}
 	return redis.NewClient(options)
 }

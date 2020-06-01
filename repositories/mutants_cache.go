@@ -48,6 +48,7 @@ func (c MutantCache) GetStatsFromCache() (*models.MutantsStats) {
 	cacheStats, ok := c.cache.Get(cacheStats)
 	if !ok {
 		log.Info("repositories.GetStatsFromCache | No stats cache in memory")
+		return nil
 	}
 	stats := cacheStats.(*models.MutantsStats)
 	return stats

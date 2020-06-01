@@ -1,0 +1,8 @@
+mode: atomic
+ExamenMeLiMutante/dal/redis.go:20.40,23.2 1 1
+ExamenMeLiMutante/dal/redis.go:25.53,26.22 1 1
+ExamenMeLiMutante/dal/redis.go:29.2,30.18 2 1
+ExamenMeLiMutante/dal/redis.go:26.22,28.3 1 0
+ExamenMeLiMutante/dal/redis.go:33.77,39.38 2 1
+ExamenMeLiMutante/dal/redis.go:49.2,49.33 1 1
+ExamenMeLiMutante/dal/redis.go:39.38,41.4 1 0
