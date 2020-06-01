@@ -1,10 +1,9 @@
 package repositories
 
 import (
-	"ExamenMeLiMutante/models"
 	"github.com/patrickmn/go-cache"
+	"github.com/sebastianreh/mutants-detector/models"
 	log "github.com/sirupsen/logrus"
-	"time"
 )
 
 type (
@@ -23,28 +22,23 @@ const (
 	cacheStats = "stats"
 )
 
-var (
-	expirationTime  = 10 * time.Minute
-	cleanUpInterval = 1 * time.Minute
-)
-
 // Crea el cache
 
 func NewMutantCacheRepository() MutantCache {
 	return MutantCache{
-		cache: cache.New(expirationTime, cleanUpInterval),
+		cache: cache.New(cache.NoExpiration, cache.NoExpiration),
 	}
 }
 
 // Guarda los stats en el cache
 
 func (c MutantCache) SaveStatsInCache(stats *models.MutantsStats) {
-	c.cache.Set(cacheStats, stats, expirationTime)
+	c.cache.Set(cacheStats, stats, cache.NoExpiration)
 }
 
 // Retorna los stats del cache
 
-func (c MutantCache) GetStatsFromCache() (*models.MutantsStats) {
+func (c MutantCache) GetStatsFromCache() *models.MutantsStats {
 	cacheStats, ok := c.cache.Get(cacheStats)
 	if !ok {
 		log.Info("repositories.GetStatsFromCache | No stats cache in memory")

@@ -5,7 +5,7 @@
 package mock_repositories
 
 import (
-	models "ExamenMeLiMutante/models"
+	models "github.com/sebastianreh/mutants-detector/models"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )

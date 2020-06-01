@@ -1,10 +1,10 @@
 package services
 
 import (
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/repositories"
-	"ExamenMeLiMutante/services/finder"
-	"ExamenMeLiMutante/utils"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/repositories"
+	"github.com/sebastianreh/mutants-detector/services/finder"
+	"github.com/sebastianreh/mutants-detector/utils"
 	log "github.com/sirupsen/logrus"
 	"sync"
 )
@@ -25,7 +25,7 @@ type (
 var (
 	statsUpdated bool
 	subChan      = make(chan *models.Subject)
-	wg sync.WaitGroup
+	wg           sync.WaitGroup
 )
 
 func NewMutantService(finderService finder.IMutantFinderService, repository repositories.IMutantRepository) IMutantService {
@@ -34,6 +34,7 @@ func NewMutantService(finderService finder.IMutantFinderService, repository repo
 		repository: repository,
 	}
 }
+
 // Aqui se verifica el status del sujeto, si no está guardado se agrega se envia al canal
 // y comienza la cola de guaradado
 
@@ -52,7 +53,7 @@ func (service MutantService) VerifyMutant(mutantRequest models.MutantRequest) mo
 		subject.IsMutant = false
 	default:
 		subject.IsMutant = service.finder.IsMutant(mutantRequest.DnaChain)
-		statsUpdated = false
+		service.ChangeCacheStatus(false)
 		go service.repository.QueueDatabaseOperations(subChan)
 		subChan <- subject
 	}

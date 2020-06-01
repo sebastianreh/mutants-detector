@@ -5,7 +5,7 @@
 package redis
 
 import (
-	//. "ExamenMeLiMutante/settings"
+	//. "github.com/sebastianreh/mutants-detector/settings"
 	"github.com/go-redis/redis"
 	"github.com/golang/mock/gomock"
 	"reflect"

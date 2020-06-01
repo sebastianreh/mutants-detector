@@ -1,18 +1,18 @@
 package repositories_test
 
 import (
-	mgo "ExamenMeLiMutante/dal/mongo"
-	rds "ExamenMeLiMutante/dal/redis"
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/repositories"
-	mongoMock "ExamenMeLiMutante/test/mocks/dal/mongo"
-	redisMock "ExamenMeLiMutante/test/mocks/dal/redis"
-	cacheMock "ExamenMeLiMutante/test/mocks/repositories"
 	"context"
 	"github.com/go-redis/redis"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	mgo "github.com/sebastianreh/mutants-detector/dal/mongo"
+	rds "github.com/sebastianreh/mutants-detector/dal/redis"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/repositories"
+	mongoMock "github.com/sebastianreh/mutants-detector/test/mocks/dal/mongo"
+	redisMock "github.com/sebastianreh/mutants-detector/test/mocks/dal/redis"
+	cacheMock "github.com/sebastianreh/mutants-detector/test/mocks/repositories"
 	"go.mongodb.org/mongo-driver/mongo"
 	"syreclabs.com/go/faker"
 )
@@ -215,6 +215,7 @@ var _ = Describe("Mutants", func() {
 				}
 				newMutantsCache.Ratio = newMutantsCache.CountHumanDna / newMutantsCache.CountHumanDna
 				mutantsCache = &newMutantsCache
+				mockCache.EXPECT().SaveStatsInCache(gomock.Any()).AnyTimes()
 				mockCache.EXPECT().GetStatsFromCache().AnyTimes()
 				mutantReposistory.GetStatsFromCache()
 			})

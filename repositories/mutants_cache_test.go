@@ -1,8 +1,8 @@
 package repositories_test
 
 import (
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/repositories"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/repositories"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"syreclabs.com/go/faker"

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/services"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/services"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
 	"net/http"

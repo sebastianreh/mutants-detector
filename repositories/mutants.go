@@ -1,12 +1,12 @@
 package repositories
 
 import (
-	mgo "ExamenMeLiMutante/dal/mongo"
-	rds "ExamenMeLiMutante/dal/redis"
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/utils"
 	"context"
 	"github.com/go-redis/redis"
+	mgo "github.com/sebastianreh/mutants-detector/dal/mongo"
+	rds "github.com/sebastianreh/mutants-detector/dal/redis"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/utils"
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -93,7 +93,11 @@ func (repository MutantRepository) SaveSubjectIteration(subject models.Subject) 
 	client := repository.startRedisClient()
 	key := selectConditionKey(subject)
 	statsCache := repository.cache.GetStatsFromCache()
-
+	if statsCache == nil {
+		preStats, _ := repository.GetSubjectsStats()
+		statsCache = utils.CalculateMutantStats(preStats)
+		repository.SaveStatsInCache(statsCache)
+	}
 	result, err := client.SAdd(key, subject.Id).Result()
 	if err != nil {
 		log.Errorf("repositories.SaveSubjectIteration | Error adding subject to Redis :%v", err)
@@ -307,6 +311,11 @@ func (repository MutantRepository) transferAndGenerateSubjects(status string) []
 
 func (repository MutantRepository) GetStatsFromCache() *models.MutantsStats {
 	cache := repository.cache.GetStatsFromCache()
+	if cache == nil {
+		preStats, _ := repository.GetSubjectsStats()
+		stats := utils.CalculateMutantStats(preStats)
+		repository.SaveStatsInCache(stats)
+	}
 	return cache
 }
 

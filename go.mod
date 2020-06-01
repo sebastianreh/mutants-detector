@@ -1,4 +1,4 @@
-module ExamenMeLiMutante
+module github.com/sebastianreh/mutants-detector
 
 go 1.13
 

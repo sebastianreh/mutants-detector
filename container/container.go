@@ -1,12 +1,12 @@
 package container
 
 import (
-	"ExamenMeLiMutante/controllers"
-	"ExamenMeLiMutante/dal/mongo"
-	"ExamenMeLiMutante/dal/redis"
-	"ExamenMeLiMutante/repositories"
-	"ExamenMeLiMutante/services"
-	"ExamenMeLiMutante/services/finder"
+	"github.com/sebastianreh/mutants-detector/controllers"
+	"github.com/sebastianreh/mutants-detector/dal/mongo"
+	"github.com/sebastianreh/mutants-detector/dal/redis"
+	"github.com/sebastianreh/mutants-detector/repositories"
+	"github.com/sebastianreh/mutants-detector/services"
+	"github.com/sebastianreh/mutants-detector/services/finder"
 )
 
 var (

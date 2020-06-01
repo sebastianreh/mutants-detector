@@ -5,7 +5,7 @@
 package mongo
 
 import (
-	//. "ExamenMeLiMutante/settings"
+	//. "github.com/sebastianreh/mutants-detector/settings"
 	"github.com/golang/mock/gomock"
 	"go.mongodb.org/mongo-driver/mongo"
 	"reflect"

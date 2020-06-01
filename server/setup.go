@@ -1,9 +1,9 @@
 package server
 
 import (
-	"ExamenMeLiMutante/container"
-	"ExamenMeLiMutante/server/routes"
-	. "ExamenMeLiMutante/settings"
+	"github.com/sebastianreh/mutants-detector/container"
+	"github.com/sebastianreh/mutants-detector/server/routes"
+	. "github.com/sebastianreh/mutants-detector/settings"
 	"fmt"
 	"github.com/labstack/echo/v4"
 )

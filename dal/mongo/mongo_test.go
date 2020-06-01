@@ -1,7 +1,7 @@
 package mongo_test
 
 import (
-	. "ExamenMeLiMutante/dal/mongo"
+	. "github.com/sebastianreh/mutants-detector/dal/mongo"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

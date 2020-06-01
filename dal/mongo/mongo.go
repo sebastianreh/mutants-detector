@@ -1,7 +1,7 @@
 package mongo
 
 import (
-	. "ExamenMeLiMutante/settings"
+	. "github.com/sebastianreh/mutants-detector/settings"
 	"context"
 	"github.com/labstack/gommon/log"
 	"go.mongodb.org/mongo-driver/mongo"

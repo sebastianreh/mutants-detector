@@ -1,8 +1,8 @@
 package main
 
 import (
-	. "ExamenMeLiMutante/container"
-	"ExamenMeLiMutante/server"
+	. "github.com/sebastianreh/mutants-detector/container"
+	"github.com/sebastianreh/mutants-detector/server"
 )
 
 func main() {

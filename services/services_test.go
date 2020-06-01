@@ -1,11 +1,11 @@
 package services_test
 
 import (
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/repositories"
-	"ExamenMeLiMutante/services"
-	repositoryMock "ExamenMeLiMutante/test/mocks/repositories"
-	finderMock "ExamenMeLiMutante/test/mocks/services/finder"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/repositories"
+	"github.com/sebastianreh/mutants-detector/services"
+	repositoryMock "github.com/sebastianreh/mutants-detector/test/mocks/repositories"
+	finderMock "github.com/sebastianreh/mutants-detector/test/mocks/services/finder"
 	"fmt"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"

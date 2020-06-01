@@ -5,7 +5,7 @@ import "github.com/kelseyhightower/envconfig"
 type (
 	Settings struct {
 		ProjectName    string `default:"mutant-finder"`
-		ProjectVersion string `default:"0.1.0"`
+		ProjectVersion string `default:"1.0.0"`
 		UrlBase        string `envconfig:"BASE_URL" required:"true" default:"localhost"`
 		Host           string `envconfig:"HOST" default:"0.0.0.0"`
 		Port           string `envconfig:"PORT" default:"8080"`
