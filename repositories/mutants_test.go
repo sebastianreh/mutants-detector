@@ -25,7 +25,6 @@ var _ = Describe("Mutants", func() {
 	var mockCache *cacheMock.MockIMutantCache
 	var dnaId string
 	var mutantsCache *models.MutantsStats
-	//var stats *models.MutantsStats
 	var subject models.Subject
 	var mutantReposistory repositories.IMutantRepository
 	var redisClient *redis.Client

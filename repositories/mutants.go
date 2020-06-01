@@ -96,7 +96,7 @@ func (repository MutantRepository) SaveSubjectIteration(subject models.Subject) 
 
 	result, err := client.SAdd(key, subject.Id).Result()
 	if err != nil {
-		log.Errorf("repositories.SaveSubjectIteration | Error :%v", err)
+		log.Errorf("repositories.SaveSubjectIteration | Error adding subject to Redis :%v", err)
 	}
 	if subject.IsMutant {
 		statsCache.CountMutantDna = statsCache.CountMutantDna + float64(result)
@@ -154,7 +154,7 @@ func (repository MutantRepository) saveBulkSubjectsInDb(subjects []models.Subjec
 	bwSubjects, err := subjectCollection.BulkWrite(context.Background(), subjectsOperations)
 
 	if err != nil {
-		log.Errorf("Error saving models.Subject in MongoDB => %v", err)
+		log.Errorf("repositories.SaveSubjectIteration | Error saving models.Subject in database: %v", err)
 	}
 
 	if bwSubjects.UpsertedCount != 0 {
@@ -164,7 +164,7 @@ func (repository MutantRepository) saveBulkSubjectsInDb(subjects []models.Subjec
 	return err
 }
 
-// Aqui se pregunta por el status del sujeto, comparandolo contra la data existente en Redis
+// Aqui se pregunta por el status del sujeto, comparándolo contra la data existente en Redis
 
 func (repository MutantRepository) GetSubjectStatus(dnaId string) string {
 	client := repository.startRedisClient()
@@ -234,9 +234,7 @@ func (repository MutantRepository) BuildRedisSubjectData(status string, collecti
 		_ = repository.saveBulkSubjectsInDb(subjectsTosSave, MutantStatus)
 	}
 	subjectsToRemove, _ := client.SMembers(savedKey).Result()
-	log.Infof("Mutants to remove: %d", len(subjectsToRemove))
-	removed, _ := client.SRem(savedKey, subjectsToRemove).Result()
-	log.Infof("Mutants removed: %d", removed)
+	client.SRem(savedKey, subjectsToRemove)
 	subjectsCount := repository.buildRedisDataByStatus(savedKey, collection)
 	return subjectsCount
 }
@@ -298,7 +296,7 @@ func (repository MutantRepository) transferAndGenerateSubjects(status string) []
 	}
 	subjectsNowInSaved, _ := client.SAdd(savedKey, subjectsToSaveDiff).Result()
 
-	log.Printf("Moving %d subjects from not saved to saved", subjectsNowInSaved)
+	log.Printf("Moving %d %ss from not saved key to saved key", subjectsNowInSaved, status)
 
 	futureSubjects := generateSubjectsAsync(generateSubjects, subjectsToSaveDiff, status)
 	subjects = <-futureSubjects

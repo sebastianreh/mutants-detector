@@ -31,12 +31,12 @@ func (controller MutantController) VerifyMutantStatus(c echo.Context) error {
 	mutantRequest := new(models.MutantRequest)
 	mutantResponse := models.MutantResponse{}
 	if err := c.Bind(&mutantRequest); err != nil {
-		log.Errorf("Error in VerifyMutantStatus: bad request: %v", err)
+		log.Errorf("controllers.VerifyMutantStatus | Error in VerifyMutantStatus, bad request: %v", err)
 		echoErr := echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		return c.JSON(echoErr.Code, echoErr)
 	}
 	if err := c.Validate(mutantRequest); err != nil {
-		log.Errorf("Error in VerifyMutantStatus: bad request: %v", err)
+		log.Errorf("controllers.VerifyMutantStatus | Error in VerifyMutantStatus, bad request: %v", err)
 		echoErr := echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		return c.JSON(echoErr.Code, echoErr)
 	}
