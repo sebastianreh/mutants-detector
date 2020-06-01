@@ -62,18 +62,20 @@ func (service MutantService) VerifyMutant(mutantRequest models.MutantRequest) mo
 // Aquí se consultan las stats, las mismas son calculadas o traidas del cache.
 
 func (service MutantService) GetSubjectsStats() (*models.MutantsStats, error) {
+	var stats *models.MutantsStats
 	if !statsUpdated {
 		preStats, err := service.repository.GetSubjectsStats()
 		if err != nil {
 			log.Errorf("services.mutant.GetSubjectStats error | %v", err)
 			return nil, err
 		}
-		stats := utils.CalculateMutantStats(preStats)
+		stats = utils.CalculateMutantStats(preStats)
 		service.repository.SaveStatsInCache(stats)
 		service.ChangeCacheStatus(true)
-		return stats, nil
+	} else {
+		stats = service.repository.GetStatsFromCache()
 	}
-	stats := service.repository.GetStatsFromCache()
+	log.Infof("services.mutant.GetSubjectStats | Stats requested: Mutants: %d Humans: %d Ratio: %f", int(stats.CountMutantDna), int(stats.CountHumanDna), stats.Ratio)
 	return stats, nil
 }
 

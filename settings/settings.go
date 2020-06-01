@@ -15,7 +15,7 @@ type (
 
 	DatabaseSpecification struct {
 		ConnectionString     string `envconfig:"DB_MUTANTS_CONNECTION" required:"true"`
-		MutantsDbName        string `envconfig:"DB_MUTANTS_COLLECTION" default:"mutant_subjects"`
+		MutantDetectorDbName string `envconfig:"DB_MUTANTS_COLLECTION" default:"mutant_detector"`
 		MaxConnections       uint64 `envconfig:"DB_MAX_CONNECTIONS" default:"20"`
 		Timeout              int    `envconfig:"DB_TIMEOUT" default:"10"`
 		MaxConnIdleTime      int    `envconfig:"DB_MAX_CONN_IDLE_TIME" default:"30"`

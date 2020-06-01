@@ -38,7 +38,7 @@ func (mgo MongoDatabase) subjectsDatabaseClient() *mongo.Client {
 }
 
 func (mgo MongoDatabase) SubjectsDatabase() *mongo.Database {
-	return mgo.subjectsDatabaseClient().Database(ProjectSettings.Database.MutantsDbName)
+	return mgo.subjectsDatabaseClient().Database(ProjectSettings.Database.MutantDetectorDbName)
 }
 
 func BuildMongoDatabaseClient() *mongo.Client {
@@ -52,7 +52,7 @@ func BuildMongoDatabaseClient() *mongo.Client {
 	clientOptions.SetMaxConnIdleTime(dbMaxConnIdleTime)
 	client, err := mongo.NewClient(clientOptions)
 	if err != nil {
-		log.Errorf("BuildMongoDatabaseClient | Error connecting to DB: %s", err.Error())
+		log.Errorf("dal.mongo.BuildMongoDatabaseClient | Error connecting to DB: %s", err.Error())
 		return nil
 	}
 
@@ -60,10 +60,10 @@ func BuildMongoDatabaseClient() *mongo.Client {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		log.Errorf("BuildMongoDatabaseClient | Error connecting to DB: %s", err.Error())
+		log.Errorf("dal.mongo.BuildMongoDatabaseClient | Error connecting to DB: %s", err.Error())
 		return nil
 	}
-	log.Info("MongoDB => New client created")
+	log.Info("dal.mongo.BuildMongoDatabaseClient | New client created")
 
 	return client
 }
@@ -79,7 +79,7 @@ func BuildTestMongoDatabase() *mongo.Database {
 	clientOptions.SetMaxConnIdleTime(dbMaxConnIdleTime)
 	client, err := mongo.NewClient(clientOptions)
 	if err != nil {
-		log.Errorf("BuildMongoDatabaseClient | Error connecting to DB: %s", err.Error())
+		log.Errorf("dal.mongo.BuildMongoDatabaseClient | Error connecting to DB: %s", err.Error())
 		return nil
 	}
 
@@ -87,10 +87,10 @@ func BuildTestMongoDatabase() *mongo.Database {
 
 	err = client.Connect(ctx)
 	if err != nil {
-		log.Errorf("BuildMongoDatabaseClient | Error connecting to DB: %s", err.Error())
+		log.Errorf("dal.mongo.BuildMongoDatabaseClient | Error connecting to DB: %s", err.Error())
 		return nil
 	}
-	log.Info("MongoDB => New client created")
+	log.Info("dal.mongo.BuildMongoDatabaseClient | New client created")
 
 	return client.Database(ProjectSettings.Database.TestMutantsDbName)
 }

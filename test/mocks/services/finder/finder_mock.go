@@ -5,9 +5,9 @@
 package mock_finder
 
 import (
-	gomock "github.com/golang/mock/gomock"
-	reflect "reflect"
-	. "sync"
+	"github.com/golang/mock/gomock"
+	"reflect"
+	//. "sync"
 )
 
 // MockIMutantFinderService is a mock of IMutantFinderService interface
