@@ -1,7 +1,7 @@
 package finder_test
 
 import (
-	"ExamenMeLiMutante/services/finder"
+	"github.com/sebastianreh/mutants-detector/services/finder"
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

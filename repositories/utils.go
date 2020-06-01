@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/utils"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )

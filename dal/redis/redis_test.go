@@ -1,7 +1,7 @@
 package redis_test
 
 import (
-	."ExamenMeLiMutante/dal/redis"
+	."github.com/sebastianreh/mutants-detector/dal/redis"
 	"github.com/go-redis/redis"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

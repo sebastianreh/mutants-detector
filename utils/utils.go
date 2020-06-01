@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"ExamenMeLiMutante/models"
+	"github.com/sebastianreh/mutants-detector/models"
 	"fmt"
 	"strconv"
 )

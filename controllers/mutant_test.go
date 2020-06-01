@@ -1,11 +1,11 @@
 package controllers_test
 
 import (
-	"ExamenMeLiMutante/controllers"
-	_ "ExamenMeLiMutante/controllers"
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/server"
-	servicesMock "ExamenMeLiMutante/test/mocks/services"
+	"github.com/sebastianreh/mutants-detector/controllers"
+	_ "github.com/sebastianreh/mutants-detector/controllers"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/server"
+	servicesMock "github.com/sebastianreh/mutants-detector/test/mocks/services"
 	"encoding/json"
 	"fmt"
 	"github.com/golang/mock/gomock"

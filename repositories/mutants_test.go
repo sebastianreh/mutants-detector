@@ -1,13 +1,13 @@
 package repositories_test
 
 import (
-	mgo "ExamenMeLiMutante/dal/mongo"
-	rds "ExamenMeLiMutante/dal/redis"
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/repositories"
-	mongoMock "ExamenMeLiMutante/test/mocks/dal/mongo"
-	redisMock "ExamenMeLiMutante/test/mocks/dal/redis"
-	cacheMock "ExamenMeLiMutante/test/mocks/repositories"
+	mgo "github.com/sebastianreh/mutants-detector/dal/mongo"
+	rds "github.com/sebastianreh/mutants-detector/dal/redis"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/repositories"
+	mongoMock "github.com/sebastianreh/mutants-detector/test/mocks/dal/mongo"
+	redisMock "github.com/sebastianreh/mutants-detector/test/mocks/dal/redis"
+	cacheMock "github.com/sebastianreh/mutants-detector/test/mocks/repositories"
 	"context"
 	"github.com/go-redis/redis"
 	"github.com/golang/mock/gomock"

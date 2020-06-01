@@ -1,7 +1,7 @@
 package redis
 
 import (
-	. "ExamenMeLiMutante/settings"
+	. "github.com/sebastianreh/mutants-detector/settings"
 	"fmt"
 	"github.com/go-redis/redis"
 	"time"

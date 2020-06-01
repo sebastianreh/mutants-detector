@@ -1,0 +1,41 @@
+version: '3.3'
+services:
+  mutants-detector:
+    build:
+      context: .
+    container_name: mutants-detector
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - mongodb
+    networks:
+      - mutants-network
+    env_file:
+      - .env.example
+
+  redis:
+    image: redis:alpine
+    container_name: redis-mutants-detector
+    hostname: redis
+    networks:
+      - mutants-network
+    volumes:
+      - redis-data:/data
+
+  mongodb:
+    image: bitnami/mongodb:latest
+    container_name: mongo-mutantes-detector
+    hostname: mongodb
+    networks:
+      - mutants-network
+    volumes:
+      - mongo-data:/data
+
+networks:
+  mutants-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  mongo-data:

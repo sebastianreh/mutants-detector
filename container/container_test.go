@@ -1,7 +1,7 @@
 package container_test
 
 import (
-	. "ExamenMeLiMutante/container"
+	. "github.com/sebastianreh/mutants-detector/container"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

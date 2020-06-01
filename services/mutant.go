@@ -1,10 +1,10 @@
 package services
 
 import (
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/repositories"
-	"ExamenMeLiMutante/services/finder"
-	"ExamenMeLiMutante/utils"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/repositories"
+	"github.com/sebastianreh/mutants-detector/services/finder"
+	"github.com/sebastianreh/mutants-detector/utils"
 	log "github.com/sirupsen/logrus"
 	"sync"
 )

@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	. "ExamenMeLiMutante/settings"
+	. "github.com/sebastianreh/mutants-detector/settings"
 	"github.com/labstack/echo/v4"
 
 	"net/http"

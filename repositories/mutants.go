@@ -1,10 +1,10 @@
 package repositories
 
 import (
-	mgo "ExamenMeLiMutante/dal/mongo"
-	rds "ExamenMeLiMutante/dal/redis"
-	"ExamenMeLiMutante/models"
-	"ExamenMeLiMutante/utils"
+	mgo "github.com/sebastianreh/mutants-detector/dal/mongo"
+	rds "github.com/sebastianreh/mutants-detector/dal/redis"
+	"github.com/sebastianreh/mutants-detector/models"
+	"github.com/sebastianreh/mutants-detector/utils"
 	"context"
 	"github.com/go-redis/redis"
 	log "github.com/sirupsen/logrus"

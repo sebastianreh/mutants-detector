@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"ExamenMeLiMutante/models"
+	"github.com/sebastianreh/mutants-detector/models"
 	"github.com/patrickmn/go-cache"
 	log "github.com/sirupsen/logrus"
 	"time"

@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"ExamenMeLiMutante/controllers"
+	"github.com/sebastianreh/mutants-detector/controllers"
 	"github.com/labstack/echo/v4"
 )
 

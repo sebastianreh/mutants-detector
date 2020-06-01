@@ -1,7 +1,7 @@
 package server
 
 import (
-	"ExamenMeLiMutante/models"
+	"github.com/sebastianreh/mutants-detector/models"
 	"fmt"
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
